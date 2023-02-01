@@ -13,5 +13,5 @@ UCLASS()
 class FUNGI_API AfungiGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
 };
