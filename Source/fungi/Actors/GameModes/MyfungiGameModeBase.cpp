@@ -26,6 +26,7 @@ void AMyfungiGameModeBase::BeginPlay()
 
     APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
     PlayerController->SetViewTargetWithBlend(CameraActor);
+    PlayerController->bShowMouseCursor = true;
 }
 
 void AMyfungiGameModeBase::Tick(float DeltaSeconds)

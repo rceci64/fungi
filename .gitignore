@@ -74,4 +74,4 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # temp folder that is created while using the editor
-enc_tmp_folder/
+enc_temp_folder/
