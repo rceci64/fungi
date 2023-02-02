@@ -10,7 +10,7 @@
 // Sets default values
 AFungiCharacter::AFungiCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetCharacterMovement()->GravityScale = 0;
 }
@@ -52,10 +52,12 @@ void AFungiCharacter::Interact()
 	ABase* HitBaseBox = Cast<ABase>(HitResult.GetActor());
 	if (HitBaseBox)
 	{
-		HitBaseBox->Funge();
-
-		ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetParentActor());
-		Manager->Funge(HitBaseBox->GridX, HitBaseBox->GridY);
+		ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetAttachParentActor());
+		
+		if (Manager)
+		{
+			Manager->ExpandFunge(HitBaseBox->GridX, HitBaseBox->GridY);
+		}
 	}
 }
 

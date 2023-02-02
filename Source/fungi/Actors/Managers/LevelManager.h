@@ -18,34 +18,46 @@ public:
 	ALevelManager();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	void Funge(int X, int Y);
-	
+
+	UFUNCTION(BlueprintCallable)
+	void ExpandFunge(int X, int Y);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+private:
+	int Pos(int X, int Y) const;
+	bool ProtectFunge(ABase* BlockFrom, int X, int Y, int OutDir, int InDir);
+	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
+	void AddSpline(ABase* Base, ABase* BlockTo, int OutDir, int InDir);
+	
 	// Properties
 public:	
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int Width;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int Height;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int StartX;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int StartY;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int EndX;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int EndY;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(MultiLine="true"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(MultiLine="true"), Category="Map")
 	FString MapString;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="ActorSpawning")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Cells")
 	TSubclassOf<ABase> Grass;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Cells")
+	TSubclassOf<ABase> Rock ;
 
-	private:
-		FString Map;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<ABase*> Map;
+	
 };
