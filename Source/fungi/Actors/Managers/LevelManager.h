@@ -55,5 +55,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<ABase*> Map;
+
+	UPROPERTY(VisibleAnywhere, Category="Score")
+	int FungableCells;
+	UPROPERTY(VisibleAnywhere, Category="Score")
+	int FungedCells;
+	UPROPERTY(VisibleAnywhere, Category = "Score")
+	int CurrentSteps;
 	
 };

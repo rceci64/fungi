@@ -3,6 +3,9 @@
 
 #include "LevelManager.h"
 
+#include "fungi/Actors/Pawns/FungiCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
 #define TILE_SIZE 100.0
 #define GRASS 'G'
 #define ROCK 'R'
@@ -37,6 +40,9 @@ void ALevelManager::BeginPlay()
 	Map = TArray<ABase*>();
 	Map.SetNumUninitialized(Width * Height);
 	FString Aux = MapString.Replace(*FString("\n"), *FString(""));
+	FungableCells = 0;
+	FungedCells = 1;	// Start already funged
+	CurrentSteps = 0;
 
 	for (int Y = 0; Y < Height; Y++)
 	{
@@ -65,6 +71,10 @@ void ALevelManager::BeginPlay()
 				{
 					Block->Funge();
 				}
+				if (Block->bAllowsFunging)
+				{
+					FungableCells++;
+				}
 			}
 			Map[Pos(X, Y)] = Block;
 		}
@@ -90,6 +100,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 	if (Block && Block->bIsFunged)
 	{
 		//UE_LOG(LogTemp, Display, TEXT("Clicked: %d, %d"), X, Y);
+		CurrentSteps++;
 
 		ProtectFunge(Block, X + 1, Y, right, left);
 		ProtectFunge(Block, X - 1, Y, left, right);
@@ -123,6 +134,13 @@ void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDi
 	BlockFrom->AdjacentCount++;
 	BlockTo->AdjacentCount++;
 	AddSpline(BlockFrom, BlockTo, OutDir, InDir);
+
+	FungedCells++;
+	if (FungedCells >= FungableCells)
+	{
+		AFungiCharacter* FungiCharacter = Cast<AFungiCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		FungiCharacter->ShowWinScreen(CurrentSteps);
+	}
 }
 
 void ALevelManager::AddSpline(ABase* Base, ABase* BlockTo, int OutDir, int InDir)

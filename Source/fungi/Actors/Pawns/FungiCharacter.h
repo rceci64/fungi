@@ -15,19 +15,30 @@ public:
 	// Sets default values for this character's properties
 	AFungiCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
 	void Interact();
+	void Pause();
 
+
+	// { -- UI RELATED FUNCTIONS --
+	UFUNCTION(BlueprintImplementableEvent)
+	void TogglePauseMenu(bool bPaused);
+
+	UFUNCTION(BlueprintCallable) //Used to make UI button work
+	void ContinueGame();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowWinScreen(int StepsToShow);
+
+	// } -- UI
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 };
