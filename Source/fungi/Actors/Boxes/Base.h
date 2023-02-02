@@ -12,7 +12,7 @@ class FUNGI_API ABase : public AActor
 	GENERATED_BODY()
 
 	// Functions
-public:	
+	public:	
 	// Sets default values for this actor's properties
 	ABase();
 
@@ -32,17 +32,26 @@ protected:
 	virtual void BeginPlay() override;
 
 	// Properties
-public:	
+	public:	
 
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Forest")
-
-	bool bIsFunged = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Forest")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Map")
 	int GridX;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Forest")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Map")
 	int GridY;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Funging")
+	bool bAllowsFunging = true;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Funging")
+	bool bIsFunged = false;
+
+	/*
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Funging")
+	TArray<ABase*> AdjacentArray;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Funging")
+	int AdjacentCount;
+	*/
 };
