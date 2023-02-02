@@ -102,7 +102,6 @@ void ALevelManager::ExpandFunge(int X, int Y)
 	if (Block && Block->bIsFunged)
 	{
 		bool AnyFunged = false;
-		//UE_LOG(LogTemp, Display, TEXT("Clicked: %d, %d"), X, Y);
 		CurrentSteps++;
 
 		AnyFunged = ProtectFunge(Block, X + 1, Y, right, left) || AnyFunged;
