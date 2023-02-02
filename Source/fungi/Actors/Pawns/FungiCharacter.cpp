@@ -4,7 +4,7 @@
 #include "FungiCharacter.h"
 
 #include "fungi/Actors/Boxes/Base.h"
-#include "fungi/Managers/LevelManager.h"
+#include "fungi/Actors/Managers/LevelManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
