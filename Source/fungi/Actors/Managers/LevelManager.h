@@ -5,11 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "fungi/Actors/Boxes/Base.h"
-<<<<<<< HEAD
 #include "fungi/Actors/Mycelium/Root.h"
 #include "fungi/Helpers/Direction.h"
-=======
->>>>>>> 6a40c3bfb1f2825402fa332006f309291d87d21f
 
 #include "LevelManager.generated.h"
 
