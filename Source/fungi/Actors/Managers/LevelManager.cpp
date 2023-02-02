@@ -35,7 +35,7 @@ void ALevelManager::BeginPlay()
 
 	Map = TArray<ABase*>();
 	Map.SetNumUninitialized(Width * Height);
-
+	
 	FString Aux = MapString.Replace(*FString("\n"), *FString(""));
 
 	for (int Y = 0; Y < Height; Y++)
