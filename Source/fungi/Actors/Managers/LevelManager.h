@@ -45,10 +45,6 @@ public:
 	int StartX;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int StartY;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int EndX;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int EndY;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(MultiLine="true"), Category="Map")
 	FString MapString;
 
