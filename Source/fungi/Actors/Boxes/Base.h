@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "fungi/Helpers/Direction.h"
 #include "Base.generated.h"
 
 UCLASS()
@@ -43,9 +44,16 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Funging")
 	bool bAllowsFunging = true;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Funging")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Funging")
 	bool bIsFunged = false;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Funging")
+	bool bIsMycelled = false;
 	
-	TArray<ABase*> AdjacentArray;
-	int AdjacentCount;
+	UPROPERTY(VisibleAnywhere, Category = "Funging")
+	int Depth = 0;
+	UPROPERTY(VisibleAnywhere, Category = "Funging")
+	int Height = 0;
+	
+	TArray<ABase*> ChildArray;
+	ABase* Parent;
 };
