@@ -89,7 +89,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 
 	if (Block && Block->bIsFunged)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Clicked: %d, %d"), X, Y);
+		//UE_LOG(LogTemp, Display, TEXT("Clicked: %d, %d"), X, Y);
 
 		ProtectFunge(Block, X + 1, Y, right, left);
 		ProtectFunge(Block, X - 1, Y, left, right);
