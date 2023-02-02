@@ -4,6 +4,7 @@
 #include "FungiCharacter.h"
 
 #include "fungi/Actors/Boxes/Base.h"
+#include "fungi/Managers/LevelManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -37,13 +38,24 @@ void AFungiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AFungiCharacter::Interact()
 {
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	FHitResult HitResult;
 	PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false, HitResult);
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, HitResult.ToString());
 	ABase* HitBaseBox = Cast<ABase>(HitResult.GetActor());
-	if (HitBaseBox) HitBaseBox->Funge();
+	if (HitBaseBox)
+	{
+		HitBaseBox->Funge();
 
+		ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetParentActor());
+		Manager->Funge(HitBaseBox->GridX, HitBaseBox->GridY);
+	}
 }
 
