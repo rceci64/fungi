@@ -45,13 +45,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Funging")
 	bool bIsFunged = false;
-
-	/*
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Funging")
 	TArray<ABase*> AdjacentArray;
-	
-	UPROPERTY(BlueprintReadWrite, Category = "Funging")
 	int AdjacentCount;
-	*/
 };

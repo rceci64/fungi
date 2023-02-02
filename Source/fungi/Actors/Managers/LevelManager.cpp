@@ -49,10 +49,10 @@ void ALevelManager::BeginPlay()
 			switch (Cell)
 			{
 			case GRASS:
-				Block = World->SpawnActor<ABase>(Grass, Location, FRotator());
+				Block = World->SpawnActor<ABase>(GrassBox, Location, FRotator());
 				break;
 			case ROCK:
-				Block = World->SpawnActor<ABase>(Rock, Location, FRotator());
+				Block = World->SpawnActor<ABase>(RockBox, Location, FRotator());
 				break;
 			}
 			if (Block)
@@ -116,13 +116,12 @@ bool ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, int OutDir, int
 void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir)
 {
 	BlockTo->Funge();
-
-	/*
-	BlockFrom->Adjacents[OutDir] = BlockTo;
+	
+	BlockFrom->AdjacentArray[OutDir] = BlockTo;
+	BlockTo->AdjacentArray[InDir] = BlockFrom;
+	
 	BlockFrom->AdjacentCount++;
-	BlockTo->Adjacents[InDir] = BlockFrom;
 	BlockTo->AdjacentCount++;
-*/
 	AddSpline(BlockFrom, BlockTo, OutDir, InDir);
 }
 

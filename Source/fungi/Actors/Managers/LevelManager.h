@@ -52,10 +52,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(MultiLine="true"), Category="Map")
 	FString MapString;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Cells")
-	TSubclassOf<ABase> Grass;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Cells")
-	TSubclassOf<ABase> Rock ;
+	UPROPERTY(EditAnywhere,Category="Boxes")
+	TSubclassOf<ABase> GrassBox;
+	UPROPERTY(EditAnywhere,Category="Boxes")
+	TSubclassOf<ABase> RockBox ;
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<ABase*> Map;

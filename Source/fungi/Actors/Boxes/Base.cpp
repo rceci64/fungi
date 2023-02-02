@@ -8,12 +8,6 @@ ABase::ABase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	/*
-	AdjacentArray = TArray<ABase*>();
-	AdjacentArray.SetNumUninitialized(4);	// Eventually change to 8 if we want to do diagonals
-	AdjacentCount = 0;
-	*/
 	
 }
 
@@ -21,6 +15,10 @@ ABase::ABase()
 void ABase::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	AdjacentArray = TArray<ABase*>();
+	AdjacentArray.SetNumUninitialized(4);	// Eventually change to 8 if we want to do diagonals
+	AdjacentCount = 0;
 }
 
 // Called every frame
