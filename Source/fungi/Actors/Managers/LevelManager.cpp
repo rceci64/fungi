@@ -37,6 +37,8 @@ void ALevelManager::BeginPlay()
 	Map = TArray<ABase*>();
 	Map.SetNumUninitialized(Width * Height);
 	FString Aux = MapString.Replace(*FString("\n"), *FString(""));
+	FungableCells = 0;
+	FungedCells = 1;	// Start already funged
 
 	for (int Y = 0; Y < Height; Y++)
 	{
@@ -64,6 +66,10 @@ void ALevelManager::BeginPlay()
 				if (X == StartX && Y == StartY)
 				{
 					Block->Funge();
+				}
+				if (Block->bAllowsFunging)
+				{
+					FungableCells++;
 				}
 			}
 			Map[Pos(X, Y)] = Block;
@@ -123,6 +129,9 @@ void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDi
 	BlockFrom->AdjacentCount++;
 	BlockTo->AdjacentCount++;
 	AddSpline(BlockFrom, BlockTo, OutDir, InDir);
+
+	FungedCells++;
+	UE_LOG(LogTemp, Warning, TEXT("Funged cells: %d"), FungedCells);
 }
 
 void ALevelManager::AddSpline(ABase* Base, ABase* BlockTo, int OutDir, int InDir)
