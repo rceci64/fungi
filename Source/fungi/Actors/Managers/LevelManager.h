@@ -60,5 +60,7 @@ public:
 	int FungableCells;
 	UPROPERTY(VisibleAnywhere, Category="Score")
 	int FungedCells;
+	UPROPERTY(VisibleAnywhere, Category = "Score")
+	int CurrentSteps;
 	
 };
