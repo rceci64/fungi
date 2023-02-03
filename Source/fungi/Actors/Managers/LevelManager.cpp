@@ -8,8 +8,6 @@
 
 #define TILE_SIZE 100.0
 #define SPLINE_HEIGHT 60.0
-#define GRASS 'G'
-#define ROCK 'R'
 
 /*
  *  0
@@ -42,7 +40,7 @@ void ALevelManager::BeginPlay()
 	FString Aux = MapString.Replace(*FString("\n"), *FString(""));
 	Aux = Aux.Replace(*FString("\r"), *FString(""));
 	FungableCells = 0;
-	FungedCells = 1;	// Start already funged
+	FungedCells = 1; // Start already funged
 	CurrentSteps = 0;
 
 	for (int Y = 0; Y < Height; Y++)
@@ -55,12 +53,20 @@ void ALevelManager::BeginPlay()
 
 			switch (Cell)
 			{
-			case GRASS:
+			case grass:
 				Block = World->SpawnActor<ABase>(GrassBox, Location, FRotator());
 				break;
-			case ROCK:
+			case rock:
 				Block = World->SpawnActor<ABase>(RockBox, Location, FRotator());
 				break;
+			case tree:
+				Block = World->SpawnActor<ABase>(TreeBox, Location, FRotator());
+				break;
+			case mushroom:
+				Block = World->SpawnActor<ABase>(MushroomBox, Location, FRotator());
+				Block->Funge();
+				break;
+			default: break;
 			}
 			if (Block)
 			{
@@ -68,10 +74,6 @@ void ALevelManager::BeginPlay()
 				Block->GridY = Y;
 				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
 
-				if (X == StartX && Y == StartY)
-				{
-					Block->Funge();
-				}
 				if (Block->bAllowsFunging)
 				{
 					FungableCells++;
@@ -80,8 +82,18 @@ void ALevelManager::BeginPlay()
 			Map[Pos(X, Y)] = Block;
 		}
 	}
-
-	MyceliumInit(World);
+	
+	for (int Y = 0; Y < Height; Y++)
+	{
+		for (int X = 0; X < Width; X++)
+		{
+			char Cell = Aux.GetCharArray()[Pos(X, Y)];
+			if (Cell == mushroom)
+			{
+				MyceliumInit(World, X, Y);
+			}
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -103,7 +115,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 	if (Block && Block->bIsFunged)
 	{
 		CurrentSteps++;
-		
+
 		ProtectFunge(Block, X + 1, Y, right, left);
 		ProtectFunge(Block, X - 1, Y, left, right);
 		ProtectFunge(Block, X, Y + 1, down, up);
@@ -161,11 +173,11 @@ void ALevelManager::UpdateParentHeights(ABase* Block, int NewHeight)
 	}
 }
 
-void ALevelManager::MyceliumInit(UWorld* World)
+void ALevelManager::MyceliumInit(UWorld* World, int X, int Y)
 {
-	FVector Location = FVector(TILE_SIZE * StartX, TILE_SIZE * StartY, SPLINE_HEIGHT);
+	FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, SPLINE_HEIGHT);
 
-	ABase* Start = Map[Pos(StartX, StartY)];
+	ABase* Start = Map[Pos(X, Y)];
 	Start->bIsMycelled = true;
 
 	for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
@@ -193,9 +205,11 @@ void ALevelManager::MyceliumExpand(ABase* Block)
 	ARoot* LongestRoot = nullptr;
 	for (ARoot* Root : Block->RootArray)
 	{
-		if (Root) {
+		if (Root)
+		{
 			ABase* Current = Block->ChildArray[Root->Direction];
-			if (Current && Current->bIsFunged && !Current->bIsMycelled) {
+			if (Current && Current->bIsFunged && !Current->bIsMycelled)
+			{
 				Possible++;
 				LastPossibleRoot = Root;
 			}
@@ -206,14 +220,15 @@ void ALevelManager::MyceliumExpand(ABase* Block)
 			}
 		}
 	}
-	
+
 	if (Possible == 1)
 	{
 		Block->RootArray[LastPossibleRoot->Direction] = LongestRoot;
 		LongestRoot->Direction = LastPossibleRoot->Direction;
 
 		MyceliumExpand(World, Block, LastPossibleRoot->Direction);
-	} else
+	}
+	else
 	{
 		for (ARoot* Root : Block->RootArray)
 		{
@@ -236,7 +251,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 		const FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);
 		Root->Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World, true);
 		Root->MyceliumRender();
-		
+
 		for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
 		{
 			const int Diff = abs(Direction - i);
@@ -254,7 +269,6 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 			}
 		}
 	}
-	
 }
 
 int ALevelManager::Pos(const int X, const int Y) const

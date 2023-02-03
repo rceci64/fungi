@@ -7,6 +7,7 @@
 #include "fungi/Actors/Boxes/Base.h"
 #include "fungi/Actors/Mycelium/Root.h"
 #include "fungi/Helpers/Direction.h"
+#include "fungi/Helpers/Boxes.h"
 
 #include "LevelManager.generated.h"
 
@@ -37,7 +38,7 @@ private:
 	void UpdateParentHeights(ABase* Block, int NewHeight);
 	void MyceliumExpand(ABase* Block);
 	void MyceliumExpand(UWorld* World, ABase* Block, EDirection Direction);
-	void MyceliumInit(UWorld* World);
+	void MyceliumInit(UWorld* World, int X, int Y);
 
 	// Properties
 public:	
@@ -46,18 +47,18 @@ public:
 	int Width;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int Height;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int StartX;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int StartY;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(MultiLine="true"), Category="Map")
 	FString MapString;
 
-	UPROPERTY(EditAnywhere,Category="Boxes")
+	UPROPERTY(EditAnywhere,Category="Actors")
 	TSubclassOf<ABase> GrassBox;
-	UPROPERTY(EditAnywhere,Category="Boxes")
+	UPROPERTY(EditAnywhere,Category="Actors")
 	TSubclassOf<ABase> RockBox ;
-	UPROPERTY(EditAnywhere,Category="Boxes")
+	UPROPERTY(EditAnywhere,Category="Actors")
+	TSubclassOf<ABase> TreeBox ;
+	UPROPERTY(EditAnywhere,Category="Actors")
+	TSubclassOf<ABase> MushroomBox ;
+	UPROPERTY(EditAnywhere,Category="Actors")
 	TSubclassOf<ARoot> MyceliumRoot ;
 
 	UPROPERTY(BlueprintReadWrite)
