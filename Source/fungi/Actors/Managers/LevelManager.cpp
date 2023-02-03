@@ -40,6 +40,7 @@ void ALevelManager::BeginPlay()
 	Map.SetNumUninitialized(Width * Height);
 
 	FString Aux = MapString.Replace(*FString("\n"), *FString(""));
+	Aux = Aux.Replace(*FString("\r"), *FString(""));
 	FungableCells = 0;
 	FungedCells = 1;	// Start already funged
 	CurrentSteps = 0;
