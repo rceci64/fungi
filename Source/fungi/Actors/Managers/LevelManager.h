@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "fungi/Actors/Boxes/Base.h"
+#include "fungi/Actors/Mycelium/Root.h"
+#include "fungi/Helpers/Direction.h"
 
 #include "LevelManager.generated.h"
 
@@ -32,8 +34,12 @@ private:
 	int Pos(int X, int Y) const;
 	bool ProtectFunge(ABase* BlockFrom, int X, int Y, int OutDir, int InDir);
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
-	void AddSpline(ABase* Base, ABase* BlockTo, int OutDir, int InDir);
-	
+	void AddSpline(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
+	void UpdateParentHeights(ABase* Base, int NewHeight);
+	void MyceliumExpand();
+	void MyceliumExpand(UWorld* World, ARoot* Root);
+	void MyceliumInit(UWorld* World);
+
 	// Properties
 public:	
 	
@@ -52,6 +58,8 @@ public:
 	TSubclassOf<ABase> GrassBox;
 	UPROPERTY(EditAnywhere,Category="Boxes")
 	TSubclassOf<ABase> RockBox ;
+	UPROPERTY(EditAnywhere,Category="Boxes")
+	TSubclassOf<ARoot> MyceliumRoot ;
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<ABase*> Map;
@@ -63,4 +71,6 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Score")
 	int CurrentSteps;
 	
+	UPROPERTY(BlueprintReadWrite)
+	TArray<ARoot*> MyceliumArray;
 };
