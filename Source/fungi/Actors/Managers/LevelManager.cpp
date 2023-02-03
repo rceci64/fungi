@@ -51,15 +51,20 @@ void ALevelManager::BeginPlay()
 		{
 			char Cell = Aux.GetCharArray()[Pos(X, Y)];
 			FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, 0);
+			FTransform Transform = {
+				FRotator(),
+				Location,
+				{1.0f, 1.0f, 1.0f},
+			};
 			ABase* Block = nullptr;
 
 			switch (Cell)
 			{
 			case GRASS:
-				Block = World->SpawnActor<ABase>(GrassBox, Location, FRotator());
+				Block = World->SpawnActorDeferred<ABase>(GrassBox, Transform);
 				break;
 			case ROCK:
-				Block = World->SpawnActor<ABase>(RockBox, Location, FRotator());
+				Block = World->SpawnActorDeferred<ABase>(RockBox, Transform);
 				break;
 			}
 			if (Block)
@@ -67,6 +72,8 @@ void ALevelManager::BeginPlay()
 				Block->GridX = X;
 				Block->GridY = Y;
 				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
+
+				Block->FinishSpawning(Transform);
 
 				if (X == StartX && Y == StartY)
 				{
@@ -76,8 +83,10 @@ void ALevelManager::BeginPlay()
 				{
 					FungableCells++;
 				}
+
 			}
 			Map[Pos(X, Y)] = Block;
+
 		}
 	}
 
