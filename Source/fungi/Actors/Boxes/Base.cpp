@@ -18,6 +18,8 @@ void ABase::BeginPlay()
 	
 	ChildArray = TArray<ABase*>();
 	ChildArray.SetNumZeroed(NUM_CARDINAL_DIRECTIONS);	// Eventually change to 8 if we want to do diagonals
+	RootArray = TArray<ARoot*>();
+	RootArray.SetNumZeroed(NUM_CARDINAL_DIRECTIONS);	
 }
 
 // Called every frame

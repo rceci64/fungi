@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "fungi/Helpers/Direction.h"
+#include "fungi/Actors/Mycelium/Root.h"
 #include "Base.generated.h"
 
 UCLASS()
@@ -56,4 +57,5 @@ protected:
 	
 	TArray<ABase*> ChildArray;
 	ABase* Parent;
+	TArray<ARoot*> RootArray;
 };
