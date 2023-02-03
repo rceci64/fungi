@@ -102,7 +102,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 	if (Block && Block->bIsFunged)
 	{
 		CurrentSteps++;
-
+		
 		ProtectFunge(Block, X + 1, Y, right, left);
 		ProtectFunge(Block, X - 1, Y, left, right);
 		ProtectFunge(Block, X, Y + 1, down, up);
