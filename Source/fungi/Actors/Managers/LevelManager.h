@@ -33,7 +33,8 @@ protected:
 
 private:
 	int Pos(int X, int Y) const;
-	bool ProtectFunge(ABase* BlockFrom, int X, int Y, int OutDir, int InDir);
+	bool ValidPos(int X, int Y) const;
+	void ProtectFunge(ABase* BlockFrom, int ToX, int ToY, EDirection OutDir, EDirection InDir, int RangeLeft);
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
 	void UpdateParentHeights(ABase* Block, int NewHeight);
 	void MyceliumExpand(ABase* Block);
@@ -64,10 +65,14 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<ABase*> Map;
 
+	UPROPERTY(VisibleAnywhere, Category = "Mechanics")
+	int CurrentRange;
 	UPROPERTY(VisibleAnywhere, Category="Score")
 	int FungableCells;
 	UPROPERTY(VisibleAnywhere, Category="Score")
 	int FungedCells;
 	UPROPERTY(VisibleAnywhere, Category = "Score")
 	int CurrentSteps;
+
+	int RangeMustIncreaseBy;
 };

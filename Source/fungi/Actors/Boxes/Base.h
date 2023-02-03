@@ -42,8 +42,11 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Map")
 	int GridY;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Funging")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Mechanics")
 	bool bAllowsFunging = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Mechanics")
+	bool bIncreasesRange = false;
+	
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Funging")
 	bool bIsFunged = false;
@@ -55,7 +58,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Funging")
 	int Height = 0;
 	
+	UPROPERTY(VisibleAnywhere, Category = "Funging")
 	TArray<ABase*> ChildArray;
+	UPROPERTY(VisibleAnywhere, Category = "Funging")
 	ABase* Parent;
+	UPROPERTY(VisibleAnywhere, Category = "Funging")
 	TArray<ARoot*> RootArray;
 };

@@ -35,5 +35,6 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TEnumAsByte<EDirection> Direction = up;
-	
+	UPROPERTY(VisibleAnywhere)
+	int Depth;
 };
