@@ -186,29 +186,60 @@ void ALevelManager::MyceliumExpand(ABase* Block)
 		return;
 	}
 
+	// Special system to manage turns
+	int Possible = 0;
+	int MaxLength = 0;
+	ARoot* LastPossibleRoot = nullptr;
+	ARoot* LongestRoot = nullptr;
 	for (ARoot* Root : Block->RootArray)
 	{
-		if (Root)
+		if (Root) {
+			ABase* Current = Block->ChildArray[Root->Direction];
+			if (Current && Current->bIsFunged && !Current->bIsMycelled) {
+				Possible++;
+				LastPossibleRoot = Root;
+			}
+			if (Root->Spline->GetNumberOfSplinePoints() >= MaxLength)
+			{
+				MaxLength = Root->Spline->GetNumberOfSplinePoints();
+				LongestRoot = Root;
+			}
+		}
+	}
+	
+	if (Possible == 1)
+	{
+		Block->RootArray[LastPossibleRoot->Direction] = LongestRoot;
+		LongestRoot->Direction = LastPossibleRoot->Direction;
+
+		MyceliumExpand(World, Block, LastPossibleRoot->Direction);
+	} else
+	{
+		for (ARoot* Root : Block->RootArray)
 		{
-			MyceliumExpand(World, Block, Root);
+			if (Root)
+			{
+				MyceliumExpand(World, Block, Root->Direction);
+			}
 		}
 	}
 }
 
-void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, ARoot* Root)
+void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direction)
 {
-	ABase* Current = Block->ChildArray[Root->Direction];
+	ARoot* Root = Block->RootArray[Direction];
+	ABase* Current = Block->ChildArray[Direction];
 
 	if (Current && Current->bIsFunged && !Current->bIsMycelled)
 	{
 		Current->bIsMycelled = true;
-		FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);
+		const FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);
 		Root->Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World, true);
 		Root->MyceliumRender();
 		
 		for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
 		{
-			const int Diff = abs(Root->Direction - i);
+			const int Diff = abs(Direction - i);
 			if (Diff != 0 && Diff != 2)
 			{
 				ARoot* Branch = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());

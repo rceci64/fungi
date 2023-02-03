@@ -36,7 +36,7 @@ private:
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
 	void UpdateParentHeights(ABase* Block, int NewHeight);
 	void MyceliumExpand(ABase* Block);
-	void MyceliumExpand(UWorld* World, ABase* Block, ARoot* Root);
+	void MyceliumExpand(UWorld* World, ABase* Block, EDirection Direction);
 	void MyceliumInit(UWorld* World);
 
 	// Properties
