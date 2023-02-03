@@ -17,8 +17,6 @@ ARoot::ARoot()
 void ARoot::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	BranchArray = TArray<ARoot*>();
 }
 
 // Called every frame

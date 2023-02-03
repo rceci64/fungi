@@ -34,10 +34,9 @@ private:
 	int Pos(int X, int Y) const;
 	bool ProtectFunge(ABase* BlockFrom, int X, int Y, int OutDir, int InDir);
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
-	void AddSpline(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
-	void UpdateParentHeights(ABase* Base, int NewHeight);
-	void MyceliumExpand();
-	void MyceliumExpand(UWorld* World, ARoot* Root);
+	void UpdateParentHeights(ABase* Block, int NewHeight);
+	void MyceliumExpand(ABase* Block);
+	void MyceliumExpand(UWorld* World, ABase* Block, ARoot* Root);
 	void MyceliumInit(UWorld* World);
 
 public:	
@@ -62,7 +61,4 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<ABase*> Map;
-	
-	UPROPERTY(BlueprintReadWrite)
-	TArray<ARoot*> MyceliumArray;
 };

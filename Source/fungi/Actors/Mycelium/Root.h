@@ -30,13 +30,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float SectionLength = 100.0;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int StartX;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int StartY;
-	
-	TArray<ARoot*> BranchArray;
-	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TEnumAsByte<EDirection> Direction = up;
 	

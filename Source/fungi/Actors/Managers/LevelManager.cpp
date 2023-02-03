@@ -91,18 +91,11 @@ void ALevelManager::ExpandFunge(int X, int Y)
 
 	if (Block && Block->bIsFunged)
 	{
-		bool AnyFunged = false;
-		//UE_LOG(LogTemp, Display, TEXT("Clicked: %d, %d"), X, Y);
-
-		AnyFunged = ProtectFunge(Block, X + 1, Y, right, left) || AnyFunged;
-		AnyFunged = ProtectFunge(Block, X - 1, Y, left, right) || AnyFunged;
-		AnyFunged = ProtectFunge(Block, X, Y + 1, down, up) || AnyFunged;
-		AnyFunged = ProtectFunge(Block, X, Y - 1, up, down) || AnyFunged;
-
-		if (AnyFunged)
-		{
-			MyceliumExpand();
-		}
+		ProtectFunge(Block, X + 1, Y, right, left);
+		ProtectFunge(Block, X - 1, Y, left, right);
+		ProtectFunge(Block, X, Y + 1, down, up);
+		ProtectFunge(Block, X, Y - 1, up, down);
+		MyceliumExpand(Block);
 	}
 }
 
@@ -132,17 +125,18 @@ void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDi
 	BlockTo->Height = 0;
 	BlockTo->Parent = BlockFrom;
 
-	UpdateParentHeights(BlockTo->Parent, BlockTo->Height + 1);
+	// MARK: HEIGHTS DISABLED FOR PERFORMANCE REASONS
+	// UpdateParentHeights(BlockTo->Parent, BlockTo->Height + 1);
 }
 
-void ALevelManager::UpdateParentHeights(ABase* Base, int NewHeight)
+void ALevelManager::UpdateParentHeights(ABase* Block, int NewHeight)
 {
-	if (NewHeight > Base->Height)
+	if (NewHeight > Block->Height)
 	{
-		Base->Height = NewHeight;
-		if (Base->Parent)
+		Block->Height = NewHeight;
+		if (Block->Parent)
 		{
-			UpdateParentHeights(Base->Parent, NewHeight + 1);
+			UpdateParentHeights(Block->Parent, NewHeight + 1);
 		}
 	}
 }
@@ -151,22 +145,19 @@ void ALevelManager::MyceliumInit(UWorld* World)
 {
 	FVector Location = FVector(TILE_SIZE * StartX, TILE_SIZE * StartY, SPLINE_HEIGHT);
 
-	Map[Pos(StartX, StartY)]->bIsMycelled = true;
-
-	MyceliumArray = TArray<ARoot*>();
-	MyceliumArray.SetNumZeroed(NUM_CARDINAL_DIRECTIONS);
+	ABase* Start = Map[Pos(StartX, StartY)];
+	Start->bIsMycelled = true;
 
 	for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
 	{
-		MyceliumArray[i] = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
-		MyceliumArray[i]->Direction = static_cast<EDirection>(i);
-		MyceliumArray[i]->StartX = StartX;
-		MyceliumArray[i]->StartY = StartY;
-		MyceliumArray[i]->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
+		ARoot* Root = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
+		Root->Direction = static_cast<EDirection>(i);
+		Start->RootArray[i] = Root;
+		Root->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
 	}
 }
 
-void ALevelManager::MyceliumExpand()
+void ALevelManager::MyceliumExpand(ABase* Block)
 {
 	UWorld* World = GetWorld();
 
@@ -175,44 +166,43 @@ void ALevelManager::MyceliumExpand()
 		return;
 	}
 
-	MyceliumExpand(World, MyceliumArray[up]);
-	MyceliumExpand(World, MyceliumArray[right]);
-	MyceliumExpand(World, MyceliumArray[down]);
-	MyceliumExpand(World, MyceliumArray[left]);
-}
-
-void ALevelManager::MyceliumExpand(UWorld* World, ARoot* Root)
-{
-	ABase* Current = Map[Pos(Root->StartX, Root->StartY)];
-
-	while (Current)
+	for (ARoot* Root : Block->RootArray)
 	{
-		if (Current->bIsFunged && !Current->bIsMycelled)
+		if (Root)
 		{
-			Current->bIsMycelled = true;
-			FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);
-			Root->Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World, true);
-			
-			for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
-			{
-				const int Diff = abs(Root->Direction - i);
-				if (Diff != 0 && Diff != 2)
-				{
-					ARoot* Branch = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
-					Branch->StartX = Current->GridX;
-					Branch->StartY = Current->GridY;
-					Branch->Direction = static_cast<EDirection>(i);
-					Branch->AttachToActor(Root, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false),
-					                      TEXT("Root"));
-					Root->BranchArray.Add(Branch);
-				}
-			}
-		}
-		Current = Current->ChildArray[Root->Direction];
-		for (ARoot* Branch : Root->BranchArray) {
-			MyceliumExpand(World, Branch);
+			MyceliumExpand(World, Block, Root);
 		}
 	}
+}
+
+void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, ARoot* Root)
+{
+	ABase* Current = Block->ChildArray[Root->Direction];
+
+	if (Current && Current->bIsFunged && !Current->bIsMycelled)
+	{
+		Current->bIsMycelled = true;
+		FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);
+		Root->Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World, true);
+		
+		for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
+		{
+			const int Diff = abs(Root->Direction - i);
+			if (Diff != 0 && Diff != 2)
+			{
+				ARoot* Branch = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
+				Branch->Direction = static_cast<EDirection>(i);
+				Branch->AttachToActor(Root, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false),
+				                      TEXT("Root"));
+				Current->RootArray[i] = Branch;
+			}
+			if (Diff == 0)
+			{
+				Current->RootArray[i] = Root;
+			}
+		}
+	}
+	
 }
 
 int ALevelManager::Pos(const int X, const int Y) const
