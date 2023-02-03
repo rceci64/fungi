@@ -203,6 +203,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, ARoot* Root)
 		Current->bIsMycelled = true;
 		FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);
 		Root->Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World, true);
+		Root->MyceliumRender();
 		
 		for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
 		{
