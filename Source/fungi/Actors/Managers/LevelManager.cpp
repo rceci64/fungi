@@ -34,7 +34,7 @@ void ALevelManager::BeginPlay()
 	FString Aux = MapString.Replace(*FString("\n"), *FString(""));
 	Aux = Aux.Replace(*FString("\r"), *FString(""));
 	FungableCells = 0;
-	FungedCells = 1; // Start already funged
+	FungedCells = 0; // Start already funged
 	CurrentSteps = 0;
 	CurrentRange = 1;
 	RangeMustIncreaseBy = 0;
@@ -61,6 +61,7 @@ void ALevelManager::BeginPlay()
 			case mushroom:
 				Block = World->SpawnActor<ABase>(MushroomBox, Location, FRotator());
 				Block->Funge();
+				FungedCells++;
 				break;
 			default: break;
 			}
@@ -207,6 +208,7 @@ void ALevelManager::MyceliumInit(UWorld* World, int X, int Y)
 	{
 		ARoot* Root = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
 		Root->Depth = 0;
+		Root->bIsLeaf = true;
 		Root->Direction = static_cast<EDirection>(i);
 		Start->RootArray[i] = Root;
 		Root->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
@@ -244,7 +246,6 @@ void ALevelManager::MyceliumExpand(ABase* Block)
 			}
 		}
 	}
-	
 	if (Possible == 1 && Block->Depth == Block->RootArray[LongestRoot->Direction]->Depth)
 	{
 		Block->RootArray[LastPossibleRoot->Direction] = LongestRoot;
@@ -254,11 +255,25 @@ void ALevelManager::MyceliumExpand(ABase* Block)
 	}
 	else
 	{
-		for (ARoot* Root : Block->RootArray)
+		if (Possible > 0)
 		{
-			if (Root)
+			for (ARoot* Root : Block->RootArray)
 			{
-				MyceliumExpand(World, Block, Root->Direction);
+				if (Root)
+				{
+					MyceliumExpand(World, Block, Root->Direction);
+				}
+			}
+			if (Block->Parent)
+			{
+				for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
+				{
+					if (Block->Parent->ChildArray[i] == Block && !Block->ChildArray[i])
+					{
+						Block->Parent->RootArray[i]->bIsLeaf = false;
+						Block->Parent->RootArray[i]->MyceliumRender();
+					}
+				}
 			}
 		}
 	}
@@ -286,6 +301,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 				{
 					ARoot* Branch = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
 					Branch->Depth = Root->Depth;
+					Branch->bIsLeaf = true;
 					Branch->Direction = static_cast<EDirection>(i);
 					Branch->AttachToActor(Root, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false),
 					                      TEXT("Root"));

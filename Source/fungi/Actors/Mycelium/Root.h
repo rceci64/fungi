@@ -35,6 +35,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TEnumAsByte<EDirection> Direction = up;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Growth")
 	int Depth;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Growth")
+	bool bIsLeaf;
+	
 };
