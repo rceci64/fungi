@@ -128,6 +128,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 
 		if (AnyFunged)
 		{
+			StepDone();
 			CurrentSteps++;
 		}
 	}

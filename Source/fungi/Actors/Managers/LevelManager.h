@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	ABase* GetBlockAt(int X, int Y);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StepDone();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
