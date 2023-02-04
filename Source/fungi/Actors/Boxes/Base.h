@@ -22,7 +22,10 @@ class FUNGI_API ABase : public AActor
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+	UFUNCTION(BlueprintCallable)
+	bool IsFungable();
+	bool IsMycelable();
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Funge();
 	
@@ -30,7 +33,7 @@ class FUNGI_API ABase : public AActor
 	void UnFunge();
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void DoHighlight(bool Highlighted);
+	void DoHighlight(bool Highlighted, bool Correct);
 
 protected:
 	// Called when the game starts or when spawned

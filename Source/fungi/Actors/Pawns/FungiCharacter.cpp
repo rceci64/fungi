@@ -21,6 +21,9 @@ AFungiCharacter::AFungiCharacter()
 void AFungiCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	// Unpause game in case it is paused
+	UWorld* WorldInstance = GetWorld();
+	UGameplayStatics::SetGamePaused(WorldInstance, false);
 }
 
 // Called every frame
@@ -41,7 +44,7 @@ void AFungiCharacter::Tick(float DeltaTime)
 			ALevelManager* Manager = Cast<ALevelManager>(LastHover->GetAttachParentActor());
 			if (Manager)
 			{
-				UpdateHighlights(Manager, LastHover->GridX, LastHover->GridY, LastRange, false);
+				UpdateHighlights(Manager, LastHover->GridX, LastHover->GridY, LastRange, false, LastCorrect);
 			}
 		}
 		
@@ -51,9 +54,10 @@ void AFungiCharacter::Tick(float DeltaTime)
 			ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetAttachParentActor());
 			if (Manager)
 			{
+				LastCorrect = HitBaseBox->bIsFunged && Manager->WouldFungeAny(HitBaseBox->GridX, HitBaseBox->GridY); 
 				LastHover = HitBaseBox;
 				LastRange = Manager->CurrentRange;
-				UpdateHighlights(Manager, HitBaseBox->GridX, HitBaseBox->GridY, Manager->CurrentRange, true);
+				UpdateHighlights(Manager, HitBaseBox->GridX, HitBaseBox->GridY, HitBaseBox->bIsFunged ? Manager->CurrentRange : 0, true, LastCorrect);
 			}
 		} else
 		{
@@ -92,7 +96,10 @@ void AFungiCharacter::Interact()
 		
 		if (Manager)
 		{
-			Manager->ExpandFunge(HitBaseBox->GridX, HitBaseBox->GridY);
+			if (Manager->ExpandFunge(HitBaseBox->GridX, HitBaseBox->GridY))
+			{
+				UpdateHighlights(Manager, HitBaseBox->GridX, HitBaseBox->GridY, Manager->CurrentRange, true, false);
+			}
 		}
 	}
 }
@@ -114,29 +121,31 @@ void AFungiCharacter::Pause()
 }
 
 
-void AFungiCharacter::UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted)
+void AFungiCharacter::UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted, bool Correct)
 {
-	Manager->GetBlockAt(FromX, FromY)->DoHighlight(Highlighted);
-
-	ABase* Block = nullptr;
+	ABase* Block = Manager->GetBlockAt(FromX, FromY);
+	if (Block && Block->bAllowsFunging)
+	{
+		Block->DoHighlight(Highlighted, Correct);
+	}
 	
 	for (int i = 1; i <= Range; ++i)
 	{
 		Block = Manager->GetBlockAt(FromX, FromY - i);
 		if (Block && Block->bAllowsFunging) {
-			Block->DoHighlight(Highlighted);
+			Block->DoHighlight(Highlighted, Correct);
 		}
 		Block = Manager->GetBlockAt(FromX + i, FromY);
 		if (Block && Block->bAllowsFunging) {
-			Block->DoHighlight(Highlighted);
+			Block->DoHighlight(Highlighted, Correct);
 		}
 		Block = Manager->GetBlockAt(FromX, FromY + i);
 		if (Block && Block->bAllowsFunging) {
-			Block->DoHighlight(Highlighted);
+			Block->DoHighlight(Highlighted, Correct);
 		}
 		Block = Manager->GetBlockAt(FromX - i, FromY);
 		if (Block && Block->bAllowsFunging) {
-			Block->DoHighlight(Highlighted);
+			Block->DoHighlight(Highlighted, Correct);
 		}
 	}
 }

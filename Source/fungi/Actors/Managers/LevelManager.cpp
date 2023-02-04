@@ -16,7 +16,6 @@ ALevelManager::ALevelManager()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-
 // Called when the game starts or when spawned
 void ALevelManager::BeginPlay()
 {
@@ -90,13 +89,53 @@ void ALevelManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ALevelManager::ExpandFunge(int X, int Y)
+
+bool ALevelManager::WouldFungeAny(int X, int Y)
+{
+	ABase* BlockTo;
+	if (ValidPos(X + 1, Y))
+	{
+		BlockTo = Map[Pos(X + 1, Y)];
+		if (BlockTo && BlockTo->IsFungable())
+		{
+			return true;
+		}
+	}
+	if (ValidPos(X - 1, Y))
+	{
+		BlockTo = Map[Pos(X - 1, Y)];
+		if (BlockTo && BlockTo->IsFungable())
+		{
+			return true;
+		}
+	}
+	if (ValidPos(X, Y - 1))
+	{
+		BlockTo = Map[Pos(X, Y - 1)];
+		if (BlockTo && BlockTo->IsFungable())
+		{
+			return true;
+		}
+	}
+	if (ValidPos(X, Y + 1))
+	{
+		BlockTo = Map[Pos(X, Y + 1)];
+		if (BlockTo && BlockTo->IsFungable())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ALevelManager::ExpandFunge(int X, int Y)
 {
 	ABase* Block = Map[Pos(X, Y)];
+	bool AnyFunged = false;
 
 	if (Block && Block->bIsFunged)
 	{
-		bool AnyFunged = false;
 		AnyFunged = ProtectFunge(Block, X, Y - 1, up, down, CurrentRange) || AnyFunged;
 		AnyFunged = ProtectFunge(Block, X + 1, Y, right, left, CurrentRange) || AnyFunged;
 		AnyFunged = ProtectFunge(Block, X, Y + 1, down, up, CurrentRange) || AnyFunged;
@@ -105,6 +144,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 
 		if (AnyFunged)
 		{
+			StepDone();
 			CurrentSteps++;
 		}
 	}
@@ -114,6 +154,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 		CurrentRange += RangeMustIncreaseBy;
 		RangeMustIncreaseBy = 0;
 	}
+	return AnyFunged;
 }
 
 ABase* ALevelManager::GetBlockAt(int X, int Y)
@@ -171,7 +212,7 @@ bool ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, EDirection OutD
 	{
 		ABase* BlockTo = Map[Pos(X, Y)];
 
-		if (BlockTo && BlockTo->bAllowsFunging && !BlockTo->bIsFunged)
+		if (BlockTo && BlockTo->IsFungable())
 		{
 			Funge(BlockFrom, BlockTo, OutDir, InDir);
 
@@ -223,6 +264,8 @@ void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDi
 	if (FungedCells >= FungableCells)
 	{
 		AFungiCharacter* FungiCharacter = Cast<AFungiCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		UWorld* WorldInstance = GetWorld();
+		UGameplayStatics::SetGamePaused(WorldInstance, true);
 		FungiCharacter->ShowWinScreen(CurrentSteps);
 	}
 }
@@ -276,7 +319,7 @@ void ALevelManager::MyceliumExpand(ABase* Block)
 		if (Root)
 		{
 			ABase* Current = Block->ChildArray[Root->Direction];
-			if (Current && Current->bIsFunged && !Current->bIsMycelled)
+			if (Current && Current->IsMycelable())
 			{
 				Possible++;
 				LastPossibleRoot = Root;
@@ -328,7 +371,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 		ARoot* Root = Block->RootArray[Direction];
 		ABase* Current = Block->ChildArray[Direction];
 
-		if (Current && Current->bIsFunged && !Current->bIsMycelled)
+		if (Current && Current->IsMycelable())
 		{
 			Current->bIsMycelled = true;
 			const FVector Location = FVector(TILE_SIZE * Current->GridX, TILE_SIZE * Current->GridY, SPLINE_HEIGHT);

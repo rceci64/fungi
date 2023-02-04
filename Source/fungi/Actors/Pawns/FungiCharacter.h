@@ -38,7 +38,7 @@ public:
 	// } -- UI
 
 private:
-	void UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted);
+	void UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted, bool Correct);
 
 	
 protected:
@@ -52,4 +52,6 @@ public:
 	ABase* LastHover;
 	UPROPERTY(VisibleAnywhere)
 	int LastRange;
+	UPROPERTY(VisibleAnywhere)
+	bool LastCorrect;
 };
