@@ -45,23 +45,26 @@ void ALevelManager::BeginPlay()
 		{
 			char Cell = Aux.GetCharArray()[Pos(X, Y)];
 			FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, 0);
+			FTransform Transform = {
+				FRotator(),
+				Location,
+				{1.0f, 1.0f, 1.0f},
+			};
 			ABase* Block = nullptr;
 
 			switch (Cell)
 			{
 			case grass:
-				Block = World->SpawnActor<ABase>(GrassBox, Location, FRotator());
+				Block = World->SpawnActorDeferred<ABase>(GrassBox, Transform);
 				break;
 			case rock:
-				Block = World->SpawnActor<ABase>(RockBox, Location, FRotator());
+				Block = World->SpawnActorDeferred<ABase>(RockBox, Transform);
 				break;
 			case tree:
-				Block = World->SpawnActor<ABase>(TreeBox, Location, FRotator());
+				Block = World->SpawnActorDeferred<ABase>(TreeBox, Transform);
 				break;
 			case mushroom:
-				Block = World->SpawnActor<ABase>(MushroomBox, Location, FRotator());
-				Block->Funge();
-				FungedCells++;
+				Block = World->SpawnActorDeferred<ABase>(MushroomBox, Transform);
 				break;
 			default: break;
 			}
@@ -69,14 +72,22 @@ void ALevelManager::BeginPlay()
 			{
 				Block->GridX = X;
 				Block->GridY = Y;
+				Block->FinishSpawning(Transform);
 				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
+				if (Cell == mushroom)
+				{
+					Block->Funge();
+					FungedCells++;
+				}
 
 				if (Block->bAllowsFunging)
 				{
 					FungableCells++;
 				}
+
 			}
 			Map[Pos(X, Y)] = Block;
+
 		}
 	}
 
