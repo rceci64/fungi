@@ -35,9 +35,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowWinScreen(int StepsToShow);
 	
-	UFUNCTION(BlueprintImplementableEvent)
-	void DoHighlight(ABase* BlockFrom, bool Highlighted);
-	
 	// } -- UI
 
 private:
