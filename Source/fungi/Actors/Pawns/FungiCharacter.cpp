@@ -21,6 +21,9 @@ AFungiCharacter::AFungiCharacter()
 void AFungiCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	// Unpause game in case it is paused
+	UWorld* WorldInstance = GetWorld();
+	UGameplayStatics::SetGamePaused(WorldInstance, false);
 }
 
 // Called every frame
