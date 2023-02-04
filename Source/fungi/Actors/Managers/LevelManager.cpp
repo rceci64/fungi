@@ -72,8 +72,8 @@ void ALevelManager::BeginPlay()
 			{
 				Block->GridX = X;
 				Block->GridY = Y;
-				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
 				Block->FinishSpawning(Transform);
+				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
 				if (Cell == mushroom)
 				{
 					Block->Funge();
