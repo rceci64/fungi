@@ -207,6 +207,8 @@ void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDi
 	if (FungedCells >= FungableCells)
 	{
 		AFungiCharacter* FungiCharacter = Cast<AFungiCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		UWorld* WorldInstance = GetWorld();
+		UGameplayStatics::SetGamePaused(WorldInstance, true);
 		FungiCharacter->ShowWinScreen(CurrentSteps);
 	}
 }
