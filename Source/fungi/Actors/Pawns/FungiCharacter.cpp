@@ -118,11 +118,11 @@ void AFungiCharacter::UpdateHighlights(ALevelManager* Manager, int FromX, int Fr
 {
 	Manager->GetBlockAt(FromX, FromY)->DoHighlight(Highlighted);
 	
-	for (int i = 1; i < Range; ++i)
+	for (int i = 1; i <= Range; ++i)
 	{
-		Manager->GetBlockAt(FromX, FromY - 1)->DoHighlight(Highlighted);
-		Manager->GetBlockAt(FromX + 1, FromY)->DoHighlight(Highlighted);
-		Manager->GetBlockAt(FromX, FromY + 1)->DoHighlight(Highlighted);
-		Manager->GetBlockAt(FromX - 1, FromY)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX, FromY - i)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX + i, FromY)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX, FromY + i)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX - i, FromY)->DoHighlight(Highlighted);
 	}
 }
