@@ -117,12 +117,26 @@ void AFungiCharacter::Pause()
 void AFungiCharacter::UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted)
 {
 	Manager->GetBlockAt(FromX, FromY)->DoHighlight(Highlighted);
+
+	ABase* Block = nullptr;
 	
-	for (int i = 1; i < Range; ++i)
+	for (int i = 1; i <= Range; ++i)
 	{
-		Manager->GetBlockAt(FromX, FromY - 1)->DoHighlight(Highlighted);
-		Manager->GetBlockAt(FromX + 1, FromY)->DoHighlight(Highlighted);
-		Manager->GetBlockAt(FromX, FromY + 1)->DoHighlight(Highlighted);
-		Manager->GetBlockAt(FromX - 1, FromY)->DoHighlight(Highlighted);
+		Block = Manager->GetBlockAt(FromX, FromY - i);
+		if (Block && Block->bAllowsFunging) {
+			Block->DoHighlight(Highlighted);
+		}
+		Block = Manager->GetBlockAt(FromX + i, FromY);
+		if (Block && Block->bAllowsFunging) {
+			Block->DoHighlight(Highlighted);
+		}
+		Block = Manager->GetBlockAt(FromX, FromY + i);
+		if (Block && Block->bAllowsFunging) {
+			Block->DoHighlight(Highlighted);
+		}
+		Block = Manager->GetBlockAt(FromX - i, FromY);
+		if (Block && Block->bAllowsFunging) {
+			Block->DoHighlight(Highlighted);
+		}
 	}
 }
