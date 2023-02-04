@@ -79,15 +79,12 @@ void ALevelManager::BeginPlay()
 					Block->Funge();
 					FungedCells++;
 				}
-
 				if (Block->bAllowsFunging)
 				{
 					FungableCells++;
 				}
-
 			}
 			Map[Pos(X, Y)] = Block;
-
 		}
 	}
 
