@@ -71,7 +71,7 @@ void ALevelEditorManager::OnClick(int X, int Y)
 		ABase* Block = Map[Pos(X, Y)];
 		if (Block)
 		{
-			World->RemoveActor(Block, false);
+			World->DestroyActor(Block);
 
 			EBox Type = NextBoxType(Block->BoxType);
 			SpawnBlockAt(World, X, Y, Type);
@@ -107,7 +107,7 @@ EBox ALevelEditorManager::NextBoxType(EBox Current)
 	case grass: return rock;
 	case rock: return tree;
 	case tree: return mushroom;
-	case mushroom: return empty;
+	case mushroom: return grass;
 	case empty:
 	default:
 		return grass;
