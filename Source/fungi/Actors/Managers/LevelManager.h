@@ -34,7 +34,7 @@ protected:
 private:
 	int Pos(int X, int Y) const;
 	bool ValidPos(int X, int Y) const;
-	void ProtectFunge(ABase* BlockFrom, int ToX, int ToY, EDirection OutDir, EDirection InDir, int RangeLeft);
+	bool ProtectFunge(ABase* BlockFrom, int ToX, int ToY, EDirection OutDir, EDirection InDir, int RangeLeft);
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
 	void UpdateParentHeights(ABase* Block, int NewHeight);
 	void MyceliumExpand(ABase* Block);
