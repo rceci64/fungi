@@ -32,6 +32,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float SectionLength = 100.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float SubRootFrequency = 100.0;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TEnumAsByte<EDirection> Direction = up;
