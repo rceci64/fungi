@@ -23,13 +23,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void ExpandFunge(int X, int Y);
+	bool ExpandFunge(int X, int Y);
 	
 	UFUNCTION(BlueprintCallable)
 	ABase* GetBlockAt(int X, int Y);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void StepDone();
+
+	UFUNCTION(BlueprintCallable)
+	bool WouldFungeAny(int X, int Y);
 
 protected:
 	// Called when the game starts or when spawned

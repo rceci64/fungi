@@ -28,3 +28,14 @@ void ABase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool ABase::IsFungable()
+{
+	return bAllowsFunging && !bIsFunged;
+}
+
+
+bool ABase::IsMycelable()
+{
+	return bAllowsFunging && !bIsMycelled;
+}
+
