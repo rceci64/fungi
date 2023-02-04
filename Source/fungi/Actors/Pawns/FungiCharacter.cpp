@@ -14,6 +14,7 @@ AFungiCharacter::AFungiCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetCharacterMovement()->GravityScale = 0;
+	LastHover = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +28,40 @@ void AFungiCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	FHitResult HitResult;
+	PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false, HitResult);
+
+	ABase* HitBaseBox = Cast<ABase>(HitResult.GetActor());
+
+	ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetAttachParentActor());
+		
+	if (Manager)
+	{
+		if (HitBaseBox != LastHover)
+		{
+			if (LastHover)
+			{
+				UpdateHighlights(Manager, LastHover->GridX, LastHover->GridY, LastRange, false);
+			}
+		}
+	
+		if (HitBaseBox)
+		{
+			LastHover = HitBaseBox;
+			LastRange = Manager->CurrentRange;
+			UpdateHighlights(Manager, HitBaseBox->GridX, HitBaseBox->GridY, Manager->CurrentRange, true);
+		} else
+		{
+			LastHover = nullptr;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -79,3 +114,17 @@ void AFungiCharacter::Pause()
 	TogglePauseMenu(UGameplayStatics::IsGamePaused(WorldInstance));
 }
 
+
+void AFungiCharacter::UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted)
+{
+
+	DoHighlight(Manager->GetBlockAt(FromX, FromY), Highlighted);
+	
+	for (int i = 1; i < Range; ++i)
+	{
+		DoHighlight(Manager->GetBlockAt(FromX, FromY - 1), Highlighted);
+		DoHighlight(Manager->GetBlockAt(FromX + 1, FromY), Highlighted);
+		DoHighlight(Manager->GetBlockAt(FromX, FromY + 1), Highlighted);
+		DoHighlight(Manager->GetBlockAt(FromX - 1, FromY), Highlighted);
+	}
+}

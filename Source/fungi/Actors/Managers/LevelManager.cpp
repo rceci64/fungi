@@ -139,6 +139,15 @@ void ALevelManager::ExpandFunge(int X, int Y)
 	}
 }
 
+ABase* ALevelManager::GetBlockAt(int X, int Y)
+{
+	if (ValidPos(X, Y))
+	{
+		return Map[Pos(X, Y)];
+	}
+	return nullptr;
+}
+
 bool ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, EDirection OutDir, EDirection InDir, int RangeLeft)
 {
 	if (ValidPos(X, Y))

@@ -23,8 +23,7 @@ public:
 
 	void Interact();
 	void Pause();
-
-
+	
 	// { -- UI RELATED FUNCTIONS --
 	UFUNCTION(BlueprintImplementableEvent)
 	void TogglePauseMenu(bool bPaused);
@@ -34,11 +33,25 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowWinScreen(int StepsToShow);
-
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void DoHighlight(ABase* BlockFrom, bool Highlighted);
+	
 	// } -- UI
 
+private:
+	void UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted);
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+	// Properties
+public:
+	UPROPERTY(VisibleAnywhere)
+	ABase* LastHover;
+	UPROPERTY(VisibleAnywhere)
+	int LastRange;
 };
