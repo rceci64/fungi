@@ -78,3 +78,5 @@ DerivedDataCache/*
 
 # temp folder that is created while using the editor
 enc_temp_folder/
+
+Plugins/
