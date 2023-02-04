@@ -35,7 +35,7 @@ void ALevelManager::BeginPlay()
 	Aux = Aux.Replace(*FString("\r"), *FString(""));
 	FungableCells = 0;
 	FungedCells = 0; // Start already funged
-	CurrentSteps = 0;
+	CurrentSteps = 1;
 	CurrentRange = 1;
 	RangeMustIncreaseBy = 0;
 
