@@ -73,12 +73,12 @@ void ALevelManager::BeginPlay()
 				Block->GridX = X;
 				Block->GridY = Y;
 				Block->FinishSpawning(Transform);
-				if (Cell == mushroom) {
+				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
+				if (Cell == mushroom)
+				{
 					Block->Funge();
 					FungedCells++;
 				}
-				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
-
 				if (Block->bAllowsFunging)
 				{
 					FungableCells++;
@@ -119,11 +119,17 @@ void ALevelManager::ExpandFunge(int X, int Y)
 
 	if (Block && Block->bIsFunged)
 	{
-		ProtectFunge(Block, X, Y - 1, up, down, CurrentRange);
-		ProtectFunge(Block, X + 1, Y, right, left, CurrentRange);
-		ProtectFunge(Block, X, Y + 1, down, up, CurrentRange);
-		ProtectFunge(Block, X - 1, Y, left, right, CurrentRange);
+		bool AnyFunged = false;
+		AnyFunged = ProtectFunge(Block, X, Y - 1, up, down, CurrentRange) || AnyFunged;
+		AnyFunged = ProtectFunge(Block, X + 1, Y, right, left, CurrentRange) || AnyFunged;
+		AnyFunged = ProtectFunge(Block, X, Y + 1, down, up, CurrentRange) || AnyFunged;
+		AnyFunged = ProtectFunge(Block, X - 1, Y, left, right, CurrentRange) || AnyFunged;
 		MyceliumExpand(Block);
+
+		if (AnyFunged)
+		{
+			CurrentSteps++;
+		}
 	}
 
 	if (RangeMustIncreaseBy > 0)
@@ -133,7 +139,7 @@ void ALevelManager::ExpandFunge(int X, int Y)
 	}
 }
 
-void ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, EDirection OutDir, EDirection InDir, int RangeLeft)
+bool ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, EDirection OutDir, EDirection InDir, int RangeLeft)
 {
 	if (ValidPos(X, Y))
 	{
@@ -162,8 +168,10 @@ void ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, EDirection OutD
 				default: ;
 				}
 			}
+			return true;
 		}
 	}
+	return false;
 }
 
 void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir)
