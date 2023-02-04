@@ -240,6 +240,7 @@ void ALevelManager::Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDi
 
 	if (BlockTo->bIncreasesRange)
 	{
+		TreeDone();
 		RangeMustIncreaseBy++;
 	}
 

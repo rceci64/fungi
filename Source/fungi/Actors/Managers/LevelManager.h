@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StepDone();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void TreeDone();
+
 	UFUNCTION(BlueprintCallable)
 	bool WouldFungeAny(int X, int Y);
 
