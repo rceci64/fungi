@@ -5,6 +5,7 @@
 
 #include "Camera/CameraActor.h"
 #include "fungi/Actors/Pawns/FungiCharacter.h"
+#include "fungi/Actors/Pawns/MastermindCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 AMyfungiGameModeBase::AMyfungiGameModeBase()
@@ -13,7 +14,7 @@ AMyfungiGameModeBase::AMyfungiGameModeBase()
     PrimaryActorTick.bStartWithTickEnabled = false;
     PrimaryActorTick.bAllowTickOnDedicatedServer = false;
 
-    DefaultPawnClass = AFungiCharacter::StaticClass();
+    DefaultPawnClass = AMastermindCharacter::StaticClass();
 }
 
 void AMyfungiGameModeBase::BeginPlay()

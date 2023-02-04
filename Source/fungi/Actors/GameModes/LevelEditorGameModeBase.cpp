@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyfungiGameModeBase.h"
+#include "LevelEditorGameModeBase.h"
 
 #include "Camera/CameraActor.h"
 #include "fungi/Actors/Pawns/FungiCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
-AMyfungiGameModeBase::AMyfungiGameModeBase()
+ALevelEditorGameModeBase::ALevelEditorGameModeBase()
 {
     PrimaryActorTick.bCanEverTick = false;
     PrimaryActorTick.bStartWithTickEnabled = false;
@@ -16,7 +16,7 @@ AMyfungiGameModeBase::AMyfungiGameModeBase()
     DefaultPawnClass = AFungiCharacter::StaticClass();
 }
 
-void AMyfungiGameModeBase::BeginPlay()
+void ALevelEditorGameModeBase::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -29,7 +29,7 @@ void AMyfungiGameModeBase::BeginPlay()
     PlayerController->bShowMouseCursor = true;
 }
 
-void AMyfungiGameModeBase::Tick(float DeltaSeconds)
+void ALevelEditorGameModeBase::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 

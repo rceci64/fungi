@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "fungi/fungiGameModeBase.h"
-#include "MyfungiGameModeBase.generated.h"
+#include "LevelEditorGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FUNGI_API AMyfungiGameModeBase : public AfungiGameModeBase
+class FUNGI_API ALevelEditorGameModeBase : public AfungiGameModeBase
 {
 	GENERATED_BODY()
 
-	AMyfungiGameModeBase();
+	ALevelEditorGameModeBase();
 
 public:
 	virtual void Tick(float DeltaSeconds) override;
