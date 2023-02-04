@@ -22,7 +22,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Interact();
+	virtual void Interact();
 	void Pause();
 	
 	// { -- UI RELATED FUNCTIONS --

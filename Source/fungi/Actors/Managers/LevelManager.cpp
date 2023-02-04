@@ -44,36 +44,12 @@ void ALevelManager::BeginPlay()
 		for (int X = 0; X < Width; X++)
 		{
 			char Cell = Aux.GetCharArray()[Pos(X, Y)];
-			FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, 0);
-			FTransform Transform = {
-				FRotator(),
-				Location,
-				{1.0f, 1.0f, 1.0f},
-			};
-			ABase* Block = nullptr;
+			EBox Type = static_cast<EBox>(Cell);
+			
+			ABase* Block = SpawnBlockAt(World, X, Y, Type);
 
-			switch (Cell)
-			{
-			case grass:
-				Block = World->SpawnActorDeferred<ABase>(GrassBox, Transform);
-				break;
-			case rock:
-				Block = World->SpawnActorDeferred<ABase>(RockBox, Transform);
-				break;
-			case tree:
-				Block = World->SpawnActorDeferred<ABase>(TreeBox, Transform);
-				break;
-			case mushroom:
-				Block = World->SpawnActorDeferred<ABase>(MushroomBox, Transform);
-				break;
-			default: break;
-			}
 			if (Block)
 			{
-				Block->GridX = X;
-				Block->GridY = Y;
-				Block->FinishSpawning(Transform);
-				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
 				if (Cell == mushroom)
 				{
 					Block->Funge();
@@ -84,7 +60,6 @@ void ALevelManager::BeginPlay()
 					FungableCells++;
 				}
 			}
-			Map[Pos(X, Y)] = Block;
 		}
 	}
 
@@ -100,6 +75,8 @@ void ALevelManager::BeginPlay()
 		}
 	}
 }
+
+
 
 // Called when the game starts or when spawned
 void ALevelManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -146,6 +123,46 @@ ABase* ALevelManager::GetBlockAt(int X, int Y)
 		return Map[Pos(X, Y)];
 	}
 	return nullptr;
+}
+
+ABase* ALevelManager::SpawnBlockAt(UWorld* World, int X, int Y, EBox Type)
+{
+	
+	FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, 0);
+	FTransform Transform = {
+		FRotator(),
+		Location,
+		{1.0f, 1.0f, 1.0f},
+	};
+	ABase* Block = nullptr;
+
+	switch (Type)
+	{
+	case grass:
+		Block = World->SpawnActorDeferred<ABase>(GrassBox, Transform);
+		break;
+	case rock:
+		Block = World->SpawnActorDeferred<ABase>(RockBox, Transform);
+		break;
+	case tree:
+		Block = World->SpawnActorDeferred<ABase>(TreeBox, Transform);
+		break;
+	case mushroom:
+		Block = World->SpawnActorDeferred<ABase>(MushroomBox, Transform);
+		break;
+	default: break;
+	}
+	if (Block)
+	{
+		Block->BoxType = Type;
+		Block->GridX = X;
+		Block->GridY = Y;
+		Block->FinishSpawning(Transform);
+		Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
+	}
+	Map[Pos(X, Y)] = Block;
+
+	return Block;
 }
 
 bool ALevelManager::ProtectFunge(ABase* BlockFrom, int X, int Y, EDirection OutDir, EDirection InDir, int RangeLeft)

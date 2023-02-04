@@ -29,14 +29,15 @@ public:
 	ABase* GetBlockAt(int X, int Y);
 
 protected:
+	ABase* SpawnBlockAt(UWorld* World, int X, int Y, EBox Type);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:
 	int Pos(int X, int Y) const;
 	bool ValidPos(int X, int Y) const;
+private:
 	bool ProtectFunge(ABase* BlockFrom, int ToX, int ToY, EDirection OutDir, EDirection InDir, int RangeLeft);
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
 	void UpdateParentHeights(ABase* Block, int NewHeight);

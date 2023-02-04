@@ -3,6 +3,8 @@
 
 #include "MastermindCharacter.h"
 
+#include "fungi/Actors/Managers/LevelEditorManager.h"
+
 
 // Sets default values
 AMastermindCharacter::AMastermindCharacter()
@@ -15,7 +17,6 @@ AMastermindCharacter::AMastermindCharacter()
 void AMastermindCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -30,3 +31,29 @@ void AMastermindCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void AMastermindCharacter::Interact()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	FHitResult HitResult;
+	PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false,
+	                                                   HitResult);
+
+	ABase* HitBaseBox = Cast<ABase>(HitResult.GetActor());
+	if (HitBaseBox)
+	{
+		UE_LOG(LogViewport, Log, TEXT("%d, %d"), HitBaseBox->GridX, HitBaseBox->GridY);
+
+		ALevelEditorManager* Manager = Cast<ALevelEditorManager>(HitBaseBox->GetAttachParentActor());
+
+		if (Manager)
+		{
+			Manager->OnClick(HitBaseBox->GridX, HitBaseBox->GridY);
+		}
+	}
+}

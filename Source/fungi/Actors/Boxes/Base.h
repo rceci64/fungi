@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "fungi/Helpers/Direction.h"
 #include "fungi/Actors/Mycelium/Root.h"
+#include "fungi/Helpers/Boxes.h"
 #include "Base.generated.h"
 
 UCLASS()
@@ -38,6 +39,10 @@ protected:
 	// Properties
 	public:	
 
+	
+	UPROPERTY(VisibleAnywhere, Category = "Map")
+	TEnumAsByte<EBox> BoxType;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Map")
 	int GridX;
 
