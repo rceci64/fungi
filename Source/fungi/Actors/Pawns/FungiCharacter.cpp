@@ -14,6 +14,7 @@ AFungiCharacter::AFungiCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GetCharacterMovement()->GravityScale = 0;
+	LastHover = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +28,39 @@ void AFungiCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	FHitResult HitResult;
+	PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false, HitResult);
+
+	ABase* HitBaseBox = Cast<ABase>(HitResult.GetActor());
+	
+	if (HitBaseBox != LastHover)
+	{
+		if (LastHover)
+		{
+			ALevelManager* Manager = Cast<ALevelManager>(LastHover->GetAttachParentActor());
+			if (Manager)
+			{
+				UpdateHighlights(Manager, LastHover->GridX, LastHover->GridY, LastRange, false);
+			}
+		}
+		
+		if (HitBaseBox)
+		{
+			UE_LOG(LogTemp, Log, TEXT("BLOCK: %d, %d"), HitBaseBox->GridX, HitBaseBox->GridY);
+			ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetAttachParentActor());
+			if (Manager)
+			{
+				LastHover = HitBaseBox;
+				LastRange = Manager->CurrentRange;
+				UpdateHighlights(Manager, HitBaseBox->GridX, HitBaseBox->GridY, Manager->CurrentRange, true);
+			}
+		} else
+		{
+			LastHover = nullptr;
+		}
+	}
+	
 }
 
 // Called to bind functionality to input
@@ -79,3 +113,16 @@ void AFungiCharacter::Pause()
 	TogglePauseMenu(UGameplayStatics::IsGamePaused(WorldInstance));
 }
 
+
+void AFungiCharacter::UpdateHighlights(ALevelManager* Manager, int FromX, int FromY, int Range, bool Highlighted)
+{
+	Manager->GetBlockAt(FromX, FromY)->DoHighlight(Highlighted);
+	
+	for (int i = 1; i < Range; ++i)
+	{
+		Manager->GetBlockAt(FromX, FromY - 1)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX + 1, FromY)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX, FromY + 1)->DoHighlight(Highlighted);
+		Manager->GetBlockAt(FromX - 1, FromY)->DoHighlight(Highlighted);
+	}
+}

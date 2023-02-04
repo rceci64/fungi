@@ -24,10 +24,12 @@ class FUNGI_API ABase : public AActor
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Funge();
-
-
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UnFunge();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void DoHighlight(bool Highlighted);
 
 protected:
 	// Called when the game starts or when spawned

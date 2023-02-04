@@ -24,6 +24,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ExpandFunge(int X, int Y);
+	
+	UFUNCTION(BlueprintCallable)
+	ABase* GetBlockAt(int X, int Y);
 
 protected:
 	// Called when the game starts or when spawned
