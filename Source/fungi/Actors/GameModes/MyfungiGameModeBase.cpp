@@ -21,11 +21,11 @@ void AMyfungiGameModeBase::BeginPlay()
     Super::BeginPlay();
 
     // Get camera and set it as default view
-    AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraActor::StaticClass());
-	ACameraActor* CameraActor = Cast<ACameraActor>(FoundActor);
+    /*AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraActor::StaticClass());
+	ACameraActor* CameraActor = Cast<ACameraActor>(FoundActor);*/
 
     APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-    PlayerController->SetViewTargetWithBlend(CameraActor);
+    //PlayerController->SetViewTargetWithBlend(CameraActor);
     PlayerController->bShowMouseCursor = true;
 }
 
