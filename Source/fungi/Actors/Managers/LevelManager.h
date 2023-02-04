@@ -7,6 +7,7 @@
 #include "fungi/Actors/Boxes/Base.h"
 #include "fungi/Actors/Mycelium/Root.h"
 #include "fungi/Helpers/Direction.h"
+#include "fungi/Helpers/Boxes.h"
 
 #include "LevelManager.generated.h"
 
@@ -32,12 +33,13 @@ protected:
 
 private:
 	int Pos(int X, int Y) const;
-	bool ProtectFunge(ABase* BlockFrom, int X, int Y, int OutDir, int InDir);
+	bool ValidPos(int X, int Y) const;
+	void ProtectFunge(ABase* BlockFrom, int ToX, int ToY, EDirection OutDir, EDirection InDir, int RangeLeft);
 	void Funge(ABase* BlockFrom, ABase* BlockTo, int OutDir, int InDir);
 	void UpdateParentHeights(ABase* Block, int NewHeight);
 	void MyceliumExpand(ABase* Block);
-	void MyceliumExpand(UWorld* World, ABase* Block, ARoot* Root);
-	void MyceliumInit(UWorld* World);
+	void MyceliumExpand(UWorld* World, ABase* Block, EDirection Direction);
+	void MyceliumInit(UWorld* World, int X, int Y);
 
 	// Properties
 public:	
@@ -46,27 +48,31 @@ public:
 	int Width;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
 	int Height;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int StartX;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Map")
-	int StartY;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(MultiLine="true"), Category="Map")
 	FString MapString;
 
-	UPROPERTY(EditAnywhere,Category="Boxes")
+	UPROPERTY(EditAnywhere,Category="Actors")
 	TSubclassOf<ABase> GrassBox;
-	UPROPERTY(EditAnywhere,Category="Boxes")
+	UPROPERTY(EditAnywhere,Category="Actors")
 	TSubclassOf<ABase> RockBox ;
-	UPROPERTY(EditAnywhere,Category="Boxes")
+	UPROPERTY(EditAnywhere,Category="Actors")
+	TSubclassOf<ABase> TreeBox ;
+	UPROPERTY(EditAnywhere,Category="Actors")
+	TSubclassOf<ABase> MushroomBox ;
+	UPROPERTY(EditAnywhere,Category="Actors")
 	TSubclassOf<ARoot> MyceliumRoot ;
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<ABase*> Map;
 
+	UPROPERTY(VisibleAnywhere, Category = "Mechanics")
+	int CurrentRange;
 	UPROPERTY(VisibleAnywhere, Category="Score")
 	int FungableCells;
 	UPROPERTY(VisibleAnywhere, Category="Score")
 	int FungedCells;
 	UPROPERTY(VisibleAnywhere, Category = "Score")
 	int CurrentSteps;
+
+	int RangeMustIncreaseBy;
 };
