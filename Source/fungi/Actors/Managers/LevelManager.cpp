@@ -45,7 +45,7 @@ void ALevelManager::BeginPlay()
 			char Cell = Aux.GetCharArray()[Pos(X, Y)];
 			FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, 0);
 			FTransform Transform = {
-				FRotator(),
+				FRotator(0, 0, 0),
 				Location,
 				{1.0f, 1.0f, 1.0f},
 			};
@@ -261,7 +261,7 @@ void ALevelManager::MyceliumInit(UWorld* World, ABase* Block)
 
 	for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
 	{
-		ARoot* Root = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
+		ARoot* Root = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator(0, 0, 0));
 		Root->Depth = 0;
 		Root->bIsLeaf = true;
 		Root->Direction = static_cast<EDirection>(i);
@@ -354,7 +354,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 				const int Diff = abs(Direction - i);
 				if (Diff != 0 && Diff != 2)
 				{
-					ARoot* Branch = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator());
+					ARoot* Branch = World->SpawnActor<ARoot>(MyceliumRoot, Location, FRotator(0, 0, 0));
 					Branch->Depth = Root->Depth;
 					Branch->bIsLeaf = true;
 					Branch->Direction = static_cast<EDirection>(i);
