@@ -266,7 +266,7 @@ void ALevelManager::MyceliumInit(UWorld* World, ABase* Block)
 		Root->bIsLeaf = true;
 		Root->Direction = static_cast<EDirection>(i);
 		Block->RootArray[i] = Root;
-		Root->AttachToActor(Block, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
+		Root->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
 	}
 }
 
@@ -358,7 +358,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 					Branch->Depth = Root->Depth;
 					Branch->bIsLeaf = true;
 					Branch->Direction = static_cast<EDirection>(i);
-					Branch->AttachToActor(Current, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
+					Branch->AttachToActor(Root, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
 					Current->RootArray[i] = Branch;
 				}
 				if (Diff == 0)
