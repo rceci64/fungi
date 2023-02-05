@@ -72,30 +72,18 @@ void ALevelManager::BeginPlay()
 				Block->GridX = X;
 				Block->GridY = Y;
 				Block->FinishSpawning(Transform);
-				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
-				if (Cell == mushroom)
-				{
+				if (Cell == mushroom){
+					MyceliumInit(World, Block);
 					Block->Funge();
 					FungedCells++;
 				}
+				Block->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Cell"));
 				if (Block->bAllowsFunging)
 				{
 					FungableCells++;
 				}
 			}
 			Map[Pos(X, Y)] = Block;
-		}
-	}
-
-	for (int Y = 0; Y < Height; Y++)
-	{
-		for (int X = 0; X < Width; X++)
-		{
-			char Cell = Aux.GetCharArray()[Pos(X, Y)];
-			if (Cell == mushroom)
-			{
-				MyceliumInit(World, X, Y);
-			}
 		}
 	}
 }
@@ -266,12 +254,11 @@ void ALevelManager::UpdateParentHeights(ABase* Block, int NewHeight)
 	}
 }
 
-void ALevelManager::MyceliumInit(UWorld* World, int X, int Y)
+void ALevelManager::MyceliumInit(UWorld* World, ABase* Block)
 {
-	FVector Location = FVector(TILE_SIZE * X, TILE_SIZE * Y, SPLINE_HEIGHT);
+	FVector Location = FVector(TILE_SIZE * Block->GridX, TILE_SIZE * Block->GridY, SPLINE_HEIGHT);
 
-	ABase* Start = Map[Pos(X, Y)];
-	Start->bIsMycelled = true;
+	Block->bIsMycelled = true;
 
 	for (int i = 0; i < NUM_CARDINAL_DIRECTIONS; ++i)
 	{
@@ -279,8 +266,8 @@ void ALevelManager::MyceliumInit(UWorld* World, int X, int Y)
 		Root->Depth = 0;
 		Root->bIsLeaf = true;
 		Root->Direction = static_cast<EDirection>(i);
-		Start->RootArray[i] = Root;
-		Root->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
+		Block->RootArray[i] = Root;
+		Root->AttachToActor(Block, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
 	}
 }
 
@@ -372,8 +359,7 @@ void ALevelManager::MyceliumExpand(UWorld* World, ABase* Block, EDirection Direc
 					Branch->Depth = Root->Depth;
 					Branch->bIsLeaf = true;
 					Branch->Direction = static_cast<EDirection>(i);
-					Branch->AttachToActor(Root, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false),
-					                      TEXT("Root"));
+					Branch->AttachToActor(Current, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false), TEXT("Root"));
 					Current->RootArray[i] = Branch;
 				}
 				if (Diff == 0)

@@ -51,7 +51,7 @@ private:
 	void UpdateParentHeights(ABase* Block, int NewHeight);
 	void MyceliumExpand(ABase* Block);
 	void MyceliumExpand(UWorld* World, ABase* Block, EDirection Direction);
-	void MyceliumInit(UWorld* World, int X, int Y);
+	void MyceliumInit(UWorld* World, ABase* Block);
 
 	// Properties
 public:	
