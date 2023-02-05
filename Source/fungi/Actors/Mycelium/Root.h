@@ -35,11 +35,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float SubRootFrequency = 100.0;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Growth")
 	TEnumAsByte<EDirection> Direction = up;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Growth")
 	int Depth;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Growth")
 	bool bIsLeaf;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Growth")
+	bool bIsBright;
 	
 };
