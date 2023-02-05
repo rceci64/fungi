@@ -91,7 +91,7 @@ void AFungiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AFungiCharacter::Interact);
-	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AFungiCharacter::Pause).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AFungiCharacter::Pause).bExecuteWhenPaused = false;
 	PlayerInputComponent->BindAction("DragCamera",  IE_Pressed, this, &AFungiCharacter::DragCameraStart);
 	PlayerInputComponent->BindAction("DragCamera",  IE_Released, this, &AFungiCharacter::DragCameraEnd);
 }
