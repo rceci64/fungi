@@ -24,6 +24,7 @@ public:
 
 	void Interact();
 	void Pause();
+	void DragCamera(float Drag);
 	
 	// { -- UI RELATED FUNCTIONS --
 	UFUNCTION(BlueprintImplementableEvent)
@@ -45,6 +46,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+	void SetCameraDragging(bool Dragging);
+	void DragCameraStart();
+	void DragCameraEnd();
 
 	// Properties
 public:
