@@ -4,6 +4,7 @@
 #include "FungiCharacter.h"
 
 #include "fungi/Actors/Boxes/Base.h"
+#include "fungi/Actors/Cameras/FungiCamera.h"
 #include "fungi/Actors/Managers/LevelManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -24,6 +25,24 @@ void AFungiCharacter::BeginPlay()
 	// Unpause game in case it is paused
 	UWorld* WorldInstance = GetWorld();
 	UGameplayStatics::SetGamePaused(WorldInstance, false);
+}
+
+void AFungiCharacter::SetCameraDragging(bool Dragging)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(World, AFungiCamera::StaticClass(), FoundActors);
+
+	if (FoundActors.Num() > 0)
+	{
+		AFungiCamera* FungiCamera = Cast<AFungiCamera>(FoundActors[0]);
+		FungiCamera->bIsDragging = Dragging;
+	}
+	
 }
 
 // Called every frame
@@ -50,7 +69,6 @@ void AFungiCharacter::Tick(float DeltaTime)
 		
 		if (HitBaseBox)
 		{
-			UE_LOG(LogTemp, Log, TEXT("BLOCK: %d, %d"), HitBaseBox->GridX, HitBaseBox->GridY);
 			ALevelManager* Manager = Cast<ALevelManager>(HitBaseBox->GetAttachParentActor());
 			if (Manager)
 			{
@@ -74,6 +92,17 @@ void AFungiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AFungiCharacter::Interact);
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AFungiCharacter::Pause).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("DragCamera",  IE_Pressed, this, &AFungiCharacter::DragCameraStart);
+	PlayerInputComponent->BindAction("DragCamera",  IE_Released, this, &AFungiCharacter::DragCameraEnd);
+}
+
+void AFungiCharacter::DragCameraStart()
+{
+	SetCameraDragging(true);
+}
+void AFungiCharacter::DragCameraEnd()
+{
+	SetCameraDragging(false);
 }
 
 void AFungiCharacter::Interact()
